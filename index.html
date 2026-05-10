@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ttv/glorping • mc mods</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600&display=swap');
+        
+        body { 
+            font-family: 'Inter', system_ui, sans-serif;
+            background: 
+                linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.85)),
+                url('background.webp') center/cover fixed; /* Placeholder - replace if needed */
+        }
+        
+        /* High-quality Minecraft Shaders Background */
+        body::after {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background: url('https://images.unsplash.com/photo-1611996575749-79a3ae6e3c1c?auto=format&fit=crop&q=90') center/cover fixed;
+            filter: brightness(0.75) contrast(1.1);
+            z-index: -2;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: 
+                linear-gradient(#22d3ee 0.8px, transparent 0.8px),
+                linear-gradient(90deg, #22d3ee 0.8px, transparent 0.8px);
+            background-size: 40px 40px;
+            opacity: 0.05;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .title-font { font-family: 'Space Grotesk', sans-serif; }
+        
+        .mod-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(24, 24, 27, 0.95);
+            border: 1px solid rgba(163, 163, 163, 0.1);
+        }
+        .mod-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 25px 50px -12px rgb(16 185 129 / 0.25);
+            border-color: rgb(163 163 163 / 0.3);
+        }
+
+        .mod-name {
+            font-size: 1.35rem;
+            line-height: 1.25;
+        }
+    </style>
+</head>
+<body class="text-zinc-200 min-h-screen">
+    <div class="max-w-7xl mx-auto px-6 py-12 relative">
+        <!-- Header -->
+        <div class="text-center mb-16">
+            <div class="inline-flex items-center gap-2 px-6 py-2.5 bg-zinc-900/80 border border-emerald-500/30 rounded-3xl text-sm mb-8 backdrop-blur-md">
+                <i class="fa-solid fa-cube text-emerald-400"></i>
+                <span class="text-emerald-400 font-bold">Minecraft 1.21.11 • Fabric</span>
+            </div>
+            
+            <h1 class="title-font text-7xl font-bold tracking-tighter mb-4 bg-gradient-to-r from-white via-emerald-300 to-white bg-clip-text text-transparent">
+                mod collection
+            </h1>
+            <p class="text-xl text-zinc-400 max-w-md mx-auto">
+                buncha mods: qol, visual, performance, etc.
+            </p>
+        </div>
+
+        <!-- Stats -->
+        <div class="grid grid-cols-2 gap-6 mb-16">
+            <div class="bg-zinc-900/70 border border-zinc-700 rounded-3xl p-8 text-center backdrop-blur-md">
+                <div id="mod-count" class="text-6xl font-bold title-font text-emerald-400">0</div>
+                <div class="text-zinc-400 mt-2 tracking-widest text-sm">TOTAL MODS</div>
+            </div>
+            <div class="bg-zinc-900/70 border border-zinc-700 rounded-3xl p-8 text-center backdrop-blur-md">
+                <div id="author-count" class="text-6xl font-bold title-font text-emerald-400">0</div>
+                <div class="text-zinc-400 mt-2 tracking-widest text-sm">UNIQUE AUTHORS</div>
+            </div>
+        </div>
+
+        <!-- Mods Grid - Changed to 3 columns on large screens (more rows) -->
+        <div id="mods-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Populated by JS -->
+        </div>
+
+        <div id="status" class="mt-12 text-center text-sm text-zinc-500"></div>
+    </div>
+
+    <script>
+        let mods = [
+            {
+                "authors": ["tr7zw"],
+                "name": "3d-Skin-Layers",
+                "url": "https://modrinth.com/mod/zV5r3pPn",
+                "version": "1.11.1"
+            },
+            {
+                "authors": ["squeek502"],
+                "name": "AppleSkin",
+                "url": "https://modrinth.com/mod/EsAfCjCV",
+                "version": "3.0.8+mc1.21.11"
+            },
+            {
+                "authors": ["shedaniel"],
+                "name": "Architectury",
+                "url": "https://modrinth.com/mod/lhGA9TYQ",
+                "version": "19.0.1"
+            },
+            {
+                "authors": ["Haven King"],
+                "name": "Atmosfera",
+                "url": "https://modrinth.com/mod/28G1xpgF",
+                "version": "2.5.5+mc1.21.11"
+            },
+            {
+                "authors": ["chililisoup"],
+                "name": "Big Sign Writer",
+                "url": "https://modrinth.com/mod/UCpxwAAu",
+                "version": "2.0.1+1.21.11-fabric"
+            },
+            {
+                "authors": ["50ap5ud5"],
+                "name": "Boat Item View",
+                "url": "https://modrinth.com/mod/BdKIyOLe",
+                "version": "0.0.8"
+            },
+            {
+                "authors": ["Mirsario"],
+                "name": "CameraOverhaul",
+                "url": "https://modrinth.com/mod/m0oRwcZx",
+                "version": "2.0.6-fabric+mc.1.21.11-plus"
+            },
+            {
+                "authors": ["dzwdz", "Fourmisain"],
+                "name": "Chat Heads",
+                "url": "https://modrinth.com/mod/Wb5oqrBJ",
+                "version": "1.2.1"
+            },
+            {
+                "authors": ["Ezzenix"],
+                "name": "ChatAnimation",
+                "url": "https://modrinth.com/mod/DnNYdJsx",
+                "version": "1.1.3"
+            },
+            {
+                "authors": ["NotRyken"],
+                "name": "ClientSort",
+                "url": "https://modrinth.com/mod/K0AkAin6",
+                "version": "2.2.1+1.21.11"
+            },
+            {
+                "authors": ["shedaniel"],
+                "name": "Cloth Config v20",
+                "url": "https://modrinth.com/mod/9s6osm5g",
+                "version": "21.11.153"
+            },
+            {
+                "authors": ["Mysticdrew"],
+                "name": "Common Network",
+                "url": "https://modrinth.com/mod/HIuqnQpi",
+                "version": "1.0.22-1.21.11"
+            },
+            {
+                "authors": ["PepperCode1"],
+                "name": "Continuity",
+                "url": "https://modrinth.com/mod/1IjD5062",
+                "version": "3.0.1-beta.1+1.21.11"
+            },
+            {
+                "authors": ["CreativeMD", "AriaFreeze"],
+                "name": "CreativeCore",
+                "url": "https://modrinth.com/mod/OsZiaDHq",
+                "version": "2.14.11"
+            },
+            {
+                "authors": ["Kir_Antipov"],
+                "name": "Cubes Without Borders",
+                "url": "https://modrinth.com/mod/ETlrkaYF",
+                "version": "3.0.0-build.14+mc1.21.11"
+            },
+            {
+                "authors": ["fishstiz"],
+                "name": "Cursors Extended",
+                "url": "https://modrinth.com/mod/o5fhgLeQ",
+                "version": "4.1.5+1.21.11"
+            },
+            {
+                "authors": ["isXander"],
+                "name": "Debugify",
+                "url": "https://modrinth.com/mod/QwxR6Gcd",
+                "version": "1.21.11+1.1"
+            },
+            {
+                "authors": ["Crendgrim"],
+                "name": "Dynamic Crosshair",
+                "url": "https://modrinth.com/mod/ZcR9weSm",
+                "version": "9.11"
+            },
+            {
+                "authors": ["Traben"],
+                "name": "Entity Model Features",
+                "url": "https://modrinth.com/mod/4I1XuqiY",
+                "version": "3.2.4"
+            },
+            {
+                "authors": ["Traben"],
+                "name": "Entity Texture Features",
+                "url": "https://modrinth.com/mod/BVzZfTc1",
+                "version": "7.1"
+            },
+            {
+                "authors": ["tr7zw"],
+                "name": "EntityCulling",
+                "url": "https://modrinth.com/mod/NNAgCjsB",
+                "version": "1.10.2"
+            },
+            {
+                "authors": ["SpacEagle17"],
+                "name": "Euphoria Patcher",
+                "url": "https://modrinth.com/mod/4H6sumDB",
+                "version": "1.8.6-r5.7.1-fabric"
+            },
+            {
+                "authors": ["FabricMC"],
+                "name": "Fabric API",
+                "url": "https://modrinth.com/mod/P7dR8mSH",
+                "version": "0.141.3+1.21.11"
+            },
+            {
+                "authors": ["FabricMC"],
+                "name": "Fabric Language Kotlin",
+                "url": "https://modrinth.com/mod/Ha28R6CL",
+                "version": "1.13.11+kotlin.2.3.21"
+            },
+            {
+                "authors": ["DerpDerpling, UltimateBoomer (Original Author)"],
+                "name": "Fadeless",
+                "url": "https://modrinth.com/mod/ncKjyGm3",
+                "version": "2.0.7-1.21.11"
+            },
+            {
+                "authors": ["Fourmisain", "BrekiTomasson", "RandomMcSomethin"],
+                "name": "Falling Leaves",
+                "url": "https://modrinth.com/mod/WhbRG4iK",
+                "version": "2.0.3"
+            },
+            {
+                "authors": ["Fallen_Breath"],
+                "name": "Fast IP Ping",
+                "url": "https://modrinth.com/mod/9mtu0sUO",
+                "version": "1.0.11"
+            },
+            {
+                "authors": ["Fuzs"],
+                "name": "Fast Item Frames",
+                "url": "https://modrinth.com/mod/FsoeTIV0",
+                "version": "21.11.1"
+            },
+            {
+                "authors": ["malte0811"],
+                "name": "FerriteCore",
+                "url": "https://modrinth.com/mod/uXXizFIs",
+                "version": "8.2.0"
+            },
+            {
+                "authors": ["Fuzs"],
+                "name": "Forge Config API Port",
+                "url": "https://modrinth.com/mod/ohNO6lps",
+                "version": "21.11.1"
+            },
+            {
+                "authors": ["Treetrain1", "Luna"],
+                "name": "FrozenLib",
+                "url": "https://modrinth.com/mod/9KawNmQc",
+                "version": "2.3-mc1.21.11"
+            },
+            {
+                "authors": ["fzzyhmstrs"],
+                "name": "Fzzy Config",
+                "url": "https://modrinth.com/mod/hYykXjDp",
+                "version": "0.7.6+1.21.11"
+            },
+            {
+                "authors": ["Sjouwer"],
+                "name": "Gamma Utils",
+                "url": "https://modrinth.com/mod/wdLuzzEP",
+                "version": "2.5.10"
+            },
+            {
+                "authors": ["A5b84"],
+                "name": "Held Item Info",
+                "url": "https://modrinth.com/mod/tEcWzCZz",
+                "version": "1.9.0"
+            },
+            {
+                "authors": ["LOOHP"],
+                "name": "ImageFrame Client",
+                "url": "https://modrinth.com/mod/7JSyQd4e",
+                "version": "1.2.0"
+            },
+            {
+                "authors": ["RK_01"],
+                "name": "ImmediatelyFast",
+                "url": "https://modrinth.com/mod/5ZwdcRci",
+                "version": "1.14.2+1.21.11"
+            },
+            {
+                "authors": ["DerpDerpling"],
+                "name": "Immersive Hotbar",
+                "url": "https://modrinth.com/mod/hsPB5xMD",
+                "version": "1.1.1-1.21.9-1.21.11"
+            },
+            {
+                "authors": ["Shatterbyte"],
+                "name": "ImmersiveUI",
+                "url": "https://modrinth.com/mod/9wv7LuMc",
+                "version": "0.3.6"
+            },
+            {
+                "authors": ["coderbot", "IMS212", "Justsnoopy30", "FoundationGames"],
+                "name": "Iris",
+                "url": "https://modrinth.com/mod/YL57xq9U",
+                "version": "1.10.7+mc1.21.11"
+            },
+            {
+                "authors": ["JFronny"],
+                "name": "LibJF",
+                "url": "https://modrinth.com/mod/WKwQAwke",
+                "version": "3.19.12"
+            },
+            {
+                "authors": ["Greenman999#8421"],
+                "name": "Librarian Trade Finder",
+                "url": "https://modrinth.com/mod/cpbKeMPQ",
+                "version": "2.4.0"
+            },
+            {
+                "authors": ["JellySquid", "2No2Name"],
+                "name": "Lithium",
+                "url": "https://modrinth.com/mod/gvQqBUqZ",
+                "version": "0.21.4+mc1.21.11"
+            },
+            {
+                "name": "Loot Beams Refork",
+                "url": "https://modrinth.com/mod/rp7ooqvq",
+                "version": "3.4.3"
+            },
+            {
+                "authors": ["IMB11 (mineblock11)"],
+                "name": "M.R.U",
+                "url": "https://modrinth.com/mod/SNVQ2c0g",
+                "version": "1.0.26+edge+1.21.10"
+            },
+            {
+                "authors": ["Motschen"],
+                "name": "MidnightLib",
+                "url": "https://modrinth.com/mod/codAaoxh",
+                "version": "1.9.3"
+            },
+            {
+                "authors": ["Prospector", "haykam821", "TerraformersMC"],
+                "name": "Mod Menu",
+                "url": "https://modrinth.com/mod/mOgUt4GM",
+                "version": "17.0.0"
+            },
+            {
+                "authors": ["JackFred"],
+                "name": "More Chat History",
+                "url": "https://modrinth.com/mod/8qkXwOnk",
+                "version": "1.3.1"
+            },
+            {
+                "authors": ["Ivan Molodetskikh (YaLTeR)"],
+                "name": "Mouse Tweaks",
+                "url": "https://modrinth.com/mod/aC3cM3Vq",
+                "version": "2.30"
+            },
+            {
+                "name": "Nirvana Lib",
+                "url": "https://modrinth.com/mod/6gKEW2ql",
+                "version": "2.2.0"
+            },
+            {
+                "authors": ["Daxanius"],
+                "name": "No Mining Cooldown",
+                "url": "https://modrinth.com/mod/azfbyO6s",
+                "version": "3.1"
+            },
+            {
+                "authors": ["Space Walker"],
+                "name": "No Resource Pack Warnings",
+                "url": "https://modrinth.com/mod/6xKUDQcB",
+                "version": "1.4.0"
+            },
+            {
+                "authors": ["Cortex"],
+                "name": "Nvidium",
+                "url": "https://github.com/drouarb/nvidium/releases/tag/0.4.3-beta12",
+                "version": "0.4.3-beta12-1.21.11"
+            },
+            {
+                "authors": ["opekope2"],
+                "name": "OptiGUI",
+                "url": "https://modrinth.com/mod/JuksLGBQ",
+                "version": "2.3.0-beta.10+1.21.9"
+            },
+            {
+                "authors": ["TonimatasDEV"],
+                "name": "Packet Fixer",
+                "url": "https://modrinth.com/mod/c7m1mi73",
+                "version": "3.3.5"
+            },
+            {
+                "authors": ["Enchanted_Games"],
+                "name": "Particle Interactions",
+                "url": "https://modrinth.com/mod/xFCYuAs8",
+                "version": "0.9.1"
+            },
+            {
+                "authors": ["pigcart"],
+                "name": "Particle Rain",
+                "url": "https://modrinth.com/mod/nrikgvxm",
+                "version": "4.0.0-beta.10"
+            },
+            {
+                "authors": ["Lunade"],
+                "name": "Particle Tweaks",
+                "url": "https://modrinth.com/mod/IlGAhsOM",
+                "version": "3.0.1-mc1.21.11"
+            },
+            {
+                "authors": ["Fuzs"],
+                "name": "Pick Up Notifier",
+                "url": "https://modrinth.com/mod/ZX66K16c",
+                "version": "21.11.0"
+            },
+            {
+                "authors": ["Patbox"],
+                "name": "Placeholder API",
+                "url": "https://modrinth.com/mod/eXts2L7r",
+                "version": "2.8.2+1.21.10"
+            },
+            {
+                "authors": ["MehVahdJukaar", "Plantkillable"],
+                "name": "Polytone",
+                "url": "https://modrinth.com/mod/3qAYkBMB",
+                "version": "1.21.11-5.6.1"
+            },
+            {
+                "authors": ["Hurricaaane (Ha3)", "Sollace"],
+                "name": "Presence Footsteps",
+                "url": "https://modrinth.com/mod/rcTfTZr3",
+                "version": "1.12.3+1.21.11"
+            },
+            {
+                "authors": ["Punchy"],
+                "name": "Punchy",
+                "url": "https://modrinth.com/mod/8aoMKplv",
+                "version": "1.21.11"
+            },
+            {
+                "authors": ["PuzzleMC", "Motschen"],
+                "name": "Puzzle",
+                "url": "https://modrinth.com/mod/3IuO68q1",
+                "version": "2.3.0"
+            },
+            {
+                "authors": ["Fuzs"],
+                "name": "Puzzles Lib",
+                "url": "https://modrinth.com/mod/QAGBst4M",
+                "version": "21.11.12"
+            },
+            {
+                "authors": ["ishland"],
+                "name": "Raise Sound Limit Simplified",
+                "url": "https://modrinth.com/mod/SKW62Pht",
+                "version": "1.1.15"
+            },
+            {
+                "authors": ["yurisuika"],
+                "name": "Raised",
+                "url": "https://modrinth.com/mod/nCQRBEiR",
+                "version": "5.1.2"
+            },
+            {
+                "authors": ["FlashyReese"],
+                "name": "Reese's Sodium Options",
+                "url": "https://modrinth.com/mod/Bh37bMuy",
+                "version": "2.0.3+mc1.21.11"
+            },
+            {
+                "authors": ["JFronny"],
+                "name": "Resource Pack Options",
+                "url": "https://modrinth.com/mod/TiF5QWZY",
+                "version": "4.14.2"
+            },
+            {
+                "authors": ["Shatterbyte"],
+                "name": "ShatterLib",
+                "url": "https://modrinth.com/mod/RH2KUdKJ",
+                "version": "0.6.0.8"
+            },
+            {
+                "authors": ["MisterPeModder"],
+                "name": "Shulker Box Tooltip",
+                "url": "https://modrinth.com/mod/2M01OLQq",
+                "version": "5.2.16+1.21.11"
+            },
+            {
+                "authors": ["Max Henkel"],
+                "name": "Simple Voice Chat",
+                "url": "https://modrinth.com/mod/9eGKb6K1",
+                "version": "1.21.11-2.6.17"
+            },
+            {
+                "authors": ["kallmetony"],
+                "name": "Smooth Hover",
+                "url": "https://modrinth.com/mod/yQPKBg26",
+                "version": "1.1"
+            },
+            {
+                "authors": ["Schauweg", "Riflusso"],
+                "name": "Smooth Swapping",
+                "url": "https://modrinth.com/mod/ydZic5r4",
+                "version": "0.9.8"
+            },
+            {
+                "authors": ["Ezzenix"],
+                "name": "SmoothGui",
+                "url": "https://modrinth.com/mod/j6yrZogB",
+                "version": "1.1.0"
+            },
+            {
+                "authors": ["JellySquid (jellysquid3)"],
+                "name": "Sodium",
+                "url": "https://modrinth.com/mod/AANobbMI",
+                "version": "0.8.11+mc1.21.11"
+            },
+            {
+                "authors": ["FlashyReese"],
+                "name": "Sodium Extra",
+                "url": "https://modrinth.com/mod/PtjYWJkn",
+                "version": "0.8.3+mc1.21.11"
+            },
+            {
+                "authors": ["Sonic Ether", "vlad2305m", "Max Henkel", "Saint"],
+                "name": "Sound Physics Remastered",
+                "url": "https://modrinth.com/mod/qyVF9oeo",
+                "version": "1.21.11-1.5.1"
+            },
+            {
+                "authors": ["IMB11 (mineblock11)"],
+                "name": "Sounds",
+                "url": "https://modrinth.com/mod/ZouiUX7t",
+                "version": "2.4.23+edge"
+            },
+            {
+                "authors": ["JustAlittleWolf"],
+                "name": "SpeedFOVLimiter",
+                "url": "https://modrinth.com/mod/N3KGRXb0",
+                "version": "1.1.0"
+            },
+            {
+                "authors": ["MincraftEinstein"],
+                "name": "Subtle Effects",
+                "url": "https://modrinth.com/mod/4q8UOK1d",
+                "version": "1.14.0"
+            },
+            {
+                "authors": ["Richy Z."],
+                "name": "ThreatenGL",
+                "url": "https://modrinth.com/mod/RSFrpoou",
+                "version": "2.0.4-release.10"
+            },
+            {
+                "authors": ["Trivaxy"],
+                "name": "Tiny Item Animations",
+                "url": "https://modrinth.com/mod/tiny-item-animations",
+                "version": "1.2.4"
+            },
+            {
+                "authors": ["ishland"],
+                "name": "Very Many Players",
+                "url": "https://modrinth.com/mod/wnEe9KBa",
+                "version": "0.2.0+beta.7.227+1.21.11"
+            },
+            {
+                "authors": ["Florian Reuth (EnZaXD)", "RK_01"],
+                "name": "ViaFabricPlus",
+                "url": "https://modrinth.com/mod/rIC2XJV4",
+                "version": "4.4.13"
+            },
+            {
+                "authors": ["PinkGoosik"],
+                "name": "Visuality",
+                "url": "https://modrinth.com/mod/rI0hvYcd",
+                "version": "0.7.13+1.21.11"
+            },
+            {
+                "authors": ["Cortex"],
+                "name": "Voxy",
+                "url": "https://modrinth.com/mod/fxxUqruK",
+                "version": "0.2.15-beta"
+            },
+            {
+                "authors": ["ImGRUI"],
+                "name": "Voxy Extra",
+                "url": "https://modrinth.com/mod/znQnhrkQ",
+                "version": "0.1.6"
+            },
+            {
+                "authors": ["tr7zw"],
+                "name": "WaveyCapes",
+                "url": "https://modrinth.com/mod/kYuIpRLv",
+                "version": "1.9.2"
+            },
+            {
+                "authors": ["EngineHub"],
+                "name": "WorldEdit",
+                "url": "https://modrinth.com/mod/1u6JkXh5",
+                "version": "7.4.2+7450-eb8e82c"
+            },
+            {
+                "authors": ["xaero96"],
+                "name": "Xaero's Minimap",
+                "url": "https://modrinth.com/mod/1bokaNcj",
+                "version": "25.3.12"
+            },
+            {
+                "authors": ["xaero96"],
+                "name": "Xaero's World Map",
+                "url": "https://modrinth.com/mod/NcUtCpym",
+                "version": "1.40.16"
+            },
+            {
+                "authors": ["isXander"],
+                "name": "YetAnotherConfigLib",
+                "url": "https://modrinth.com/mod/1eAoo2KR",
+                "version": "3.8.2+1.21.11-fabric"
+            },
+            {
+                "authors": ["isXander"],
+                "name": "Zoomify",
+                "url": "https://modrinth.com/mod/w7ThoJFB",
+                "version": "2.15.2+1.21.11"
+            },
+            {
+                "name": "essential-container",
+                "url": "https://modrinth.com/mod/k2ZPuTBm",
+                "version": "1.0.0"
+            },
+            {
+                "authors": ["kennytv"],
+                "name": "kennytv's epic force close loading screen mod for Fabric",
+                "url": "https://modrinth.com/mod/blWBX5n1",
+                "version": "2.3.4"
+            }
+        ];
+
+        let iconCache = {};
+
+        function getModId(url) {
+            if (!url) return null;
+            const match = url.match(/modrinth\.com\/mod\/([a-zA-Z0-9_-]+)/);
+            return match ? match[1] : null;
+        }
+
+        async function loadIconCache() {
+            try {
+                const res = await fetch('icons.json', { cache: 'no-cache' });
+                if (res.ok) iconCache = await res.json();
+            } catch (e) {}
+        }
+
+        async function getIconUrl(modId) {
+            if (!modId) return null;
+            if (iconCache[modId]) return iconCache[modId];
+
+            try {
+                const res = await fetch(`https://api.modrinth.com/v2/project/${modId}`);
+                if (!res.ok) return null;
+                const data = await res.json();
+                const iconUrl = data.icon_url;
+                if (iconUrl) iconCache[modId] = iconUrl;
+                return iconUrl;
+            } catch (e) {
+                return null;
+            }
+        }
+
+        async function renderMods(modList) {
+            const container = document.getElementById('mods-container');
+            container.innerHTML = '';
+            const statusEl = document.getElementById('status');
+
+            for (const mod of modList) {
+                const authors = Array.isArray(mod.authors) ? mod.authors.join(', ') : (mod.authors || 'Unknown');
+                const modId = getModId(mod.url);
+
+                const card = document.createElement('div');
+                card.className = `mod-card rounded-3xl overflow-hidden h-full flex flex-col relative`;
+
+                card.innerHTML = `
+                    <div class="p-6 flex-1">
+                        <div class="flex gap-5">
+                            <div class="w-16 h-16 bg-zinc-800 rounded-2xl overflow-hidden flex-shrink-0 border border-zinc-700">
+                                <img src="modrinth_logo.webp" 
+                                     alt="${mod.name}" 
+                                     class="w-full h-full object-cover">
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <a href="${mod.url || '#'}" target="_blank"
+                                   class="mod-name block font-semibold title-font tracking-tight hover:text-emerald-400 transition-colors line-clamp-2">
+                                    ${mod.name}
+                                </a>
+                                <p class="text-zinc-400 mt-3 text-sm line-clamp-2">${authors}</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="mt-auto border-t border-zinc-800 px-6 py-4">
+                        <a href="${mod.url || '#'}" target="_blank"
+                           class="flex items-center justify-center gap-2 text-emerald-400 hover:text-emerald-300 transition-colors text-sm font-medium">
+                            <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                            Modrinth
+                        </a>
+                    </div>
+                `;
+                container.appendChild(card);
+
+                if (modId) {
+                    const iconUrl = await getIconUrl(modId);
+                    if (iconUrl) {
+                        const img = card.querySelector('img');
+                        img.src = iconUrl;
+                    }
+                }
+            }
+        }
+
+        function updateStats() {
+            document.getElementById('mod-count').textContent = mods.length;
+            const authors = new Set();
+            mods.forEach(mod => {
+                if (Array.isArray(mod.authors)) mod.authors.forEach(a => authors.add(a));
+                else if (mod.authors) authors.add(mod.authors);
+            });
+            document.getElementById('author-count').textContent = authors.size;
+        }
+
+        window.onload = async () => {
+            await loadIconCache();
+            renderMods(mods);
+            updateStats();
+        };
+    </script>
+</body>
+</html>
