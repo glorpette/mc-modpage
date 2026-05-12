@@ -13,10 +13,9 @@
             font-family: 'Inter', system_ui, sans-serif;
             background: 
                 linear-gradient(rgba(0,0,0,0.65), rgba(0,0,0,0.85)),
-                url('background.webp') center/cover fixed; /* Placeholder - replace if needed */
+                url('background.webp') center/cover fixed;
         }
         
-        /* High-quality Minecraft Shaders Background */
         body::after {
             content: '';
             position: fixed;
@@ -56,11 +55,18 @@
             font-size: 1.35rem;
             line-height: 1.25;
         }
+
+        .download-btn {
+            transition: all 0.3s ease;
+        }
+        .download-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 15px 25px -5px rgb(16 185 129 / 0.5);
+        }
     </style>
 </head>
 <body class="text-zinc-200 min-h-screen">
     <div class="max-w-7xl mx-auto px-6 py-12 relative">
-        <!-- Header -->
         <div class="text-center mb-16">
             <div class="inline-flex items-center gap-2 px-6 py-2.5 bg-zinc-900/80 border border-emerald-500/30 rounded-3xl text-sm mb-8 backdrop-blur-md">
                 <i class="fa-solid fa-cube text-emerald-400"></i>
@@ -73,9 +79,17 @@
             <p class="text-xl text-zinc-400 max-w-md mx-auto">
                 buncha mods: qol, visual, performance, etc.
             </p>
+
+            <div class="mt-8">
+                <a href="glorping-pack.mrpack" 
+                   download="glorping-pack.mrpack"
+                   class="download-btn inline-flex items-center gap-3 bg-emerald-500 hover:bg-emerald-600 text-black font-semibold px-10 py-5 rounded-3xl text-xl shadow-xl">
+                    <i class="fa-solid fa-download text-2xl"></i>
+                    <span>download modpack (.mrpack)</span>
+                </a>
+            </div>
         </div>
 
-        <!-- Stats -->
         <div class="grid grid-cols-2 gap-6 mb-16">
             <div class="bg-zinc-900/70 border border-zinc-700 rounded-3xl p-8 text-center backdrop-blur-md">
                 <div id="mod-count" class="text-6xl font-bold title-font text-emerald-400">0</div>
@@ -87,9 +101,7 @@
             </div>
         </div>
 
-        <!-- Mods Grid - Changed to 3 columns on large screens (more rows) -->
         <div id="mods-container" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            <!-- Populated by JS -->
         </div>
 
         <div id="status" class="mt-12 text-center text-sm text-zinc-500"></div>
